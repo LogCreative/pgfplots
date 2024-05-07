@@ -121,7 +121,7 @@ for($j = 2; $j<=$#ARGV; ++$j ) {
 	$autoheaders = '';
 	$largegraphics = 0;
 
-	@matches = ( $content =~ m/(% [^\n]*\n)*([^\n]*)\\begin{codeexample}(\[[^\n]*\])\n(.*?)[\n \t]*\\end{codeexample}/gs );
+	@matches = ( $content =~ m/(% \\[^\n]*\n)*([^\n]*)\\begin{codeexample}(\[[^\n]*\])\n(.*?)[\n \t]*\\end{codeexample}/gs );
 	#	@matches = ( $content =~ m/(% [^\n]*\n)*\\begin{codeexample}(\[\])\n(\\begin{tikzpicture}.*?\\end{tikzpicture})/gs );
 
 	if( $ARGV[$j] =~ m/pgfplotstable.tex/ ) {
@@ -181,10 +181,24 @@ for($j = 2; $j<=$#ARGV; ++$j ) {
 			open(OUTFILE,">",$outfile) or die( "could not open $outfile for writing");
 			print OUTFILE $header;
 			print OUTFILE $autoheaders;
-			print OUTFILE "\\usepackage{pgfplotstable}\n" if ($match =~ /pgfplotstable/);
-			print OUTFILE "\\usepackage{hyperref}\n" if ($match =~ /\\url/);
-			print OUTFILE "\\usepackage{textcomp}\n" if ($match =~ /\\textdegree/);
-			print OUTFILE "\\usepackage{listings}\n" if ($match =~ /\\lst/);
+			print OUTFILE "\n\\usepackage{pgfplotstable}" if ($match =~ /pgfplotstable/ and $largegraphics != 1);
+			print OUTFILE "\n\\usepackage{hyperref}" if ($match =~ /\\url/);
+			print OUTFILE "\n\\usepackage{textcomp}" if ($match =~ /\\textdegree/);
+			print OUTFILE "\n\\usepackage{listings}" if ($match =~ /\\lst/);
+			if ($match =~ m/%\s?\w*\s?\\usetikzlibrary{(.*)}/) {
+				my $tikzLibraries = $1;
+				$match =~ s/%\s?\w*\s?\\usetikzlibrary{(.*)}\s*\w*\n//;
+				unless ($autoheaders =~ m/\\usetikzlibrary{$tikzLibraries}/) {
+					print OUTFILE "\n\\usetikzlibrary{$tikzLibraries}";
+				}
+			}
+			if ($match =~ m/%\s?\w*\s?\\usepgfplotslibrary{(.*)}/) {
+				my $pgfplotsLibraries = $1;
+				$match =~ s/%\s?\w*\s?\\usepgfplotslibrary{(.*)}\s*\w*\n//;
+				unless ($autoheaders =~ m/\\usepgfplotslibrary{$pgfplotsLibraries}/) {
+					print OUTFILE "\n\\usepgfplotslibrary{$pgfplotsLibraries}";
+				}
+			}
 			print OUTFILE $prefix;
 			print OUTFILE "\n\\begin{document}\n";
 			print OUTFILE $match;
