@@ -32,29 +32,29 @@ $#ARGV > 0 or die('expected OUTPREFIX OUTHTML INFILE[s].');
 $OUTPREFIX=$ARGV[0];
 $OUTHTMLNAME=$ARGV[1];
 
+# To keep the code clean, the following statement will be removed:
+#
+# translate with >> pdflatex -shell-escape <file>
+#
+# This file is an extract of the PGFPLOTS manual, copyright by Christian Feuersaenger.
+# 
+# Feel free to use it as long as you cite the pgfplots manual properly.
+#
+# See
+#   http://pgfplots.sourceforge.net/pgfplots.pdf
+# for the complete manual.
+#
+# Any required input files (for <plot table> or <plot file> or the table package) can be downloaded
+# at
+# http://www.ctan.org/tex-archive/graphics/pgf/contrib/pgfplots/doc/latex/
+# and
+# http://www.ctan.org/tex-archive/graphics/pgf/contrib/pgfplots/doc/latex/plotdata/
+
+
 $header = 
-'\documentclass{standalone}
-% translate with >> pdflatex -shell-escape <file>
-
-% This file is an extract of the PGFPLOTS manual, copyright by Christian Feuersaenger.
-% 
-% Feel free to use it as long as you cite the pgfplots manual properly.
-%
-% See
-%   http://pgfplots.sourceforge.net/pgfplots.pdf
-% for the complete manual.
-%
-% Any required input files (for <plot table> or <plot file> or the table package) can be downloaded
-% at
-% http://www.ctan.org/tex-archive/graphics/pgf/contrib/pgfplots/doc/latex/
-% and
-% http://www.ctan.org/tex-archive/graphics/pgf/contrib/pgfplots/doc/latex/plotdata/
-
+'\documentclass[tikz]{standalone}
 \usepackage{pgfplots}
-\pgfplotsset{compat=newest}
-
-\pagestyle{empty}
-';
+\pgfplotsset{compat=newest}';
 
 $plotcoord_cmd='
 % \addplot table[x=dof,y=L2error] {d2data.dat};
