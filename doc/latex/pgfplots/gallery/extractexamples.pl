@@ -132,15 +132,13 @@ for($j = 2; $j<=$#ARGV; ++$j ) {
 \usepackage{colortbl}
 \usepackage{booktabs}
 \usepackage{eurosym}
-\usepackage{amsmath}
-';
+\usepackage{amsmath}';
 	}
 
 	@libName = ($ARGV[$j] =~ m/pgfplots\.libs\.(.*)\.tex/ );
 	if ($#libName >=0 ) {
 		$autoheaders = $autoheaders.'
-\usepgfplotslibrary{'.$libName[0].'}
-';
+\usepgfplotslibrary{'.$libName[0].'}';
 	}
 
 	for( $q=0; $q<=$#matches/4; $q++ ) {
