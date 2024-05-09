@@ -121,7 +121,7 @@ for($j = 2; $j<=$#ARGV; ++$j ) {
 	$autoheaders = '';
 	$largegraphics = 0;
 
-	@matches = ( $content =~ m/(% \\[^\n]*\n)*([^\n]*)\\begin{codeexample}(\[[^\n]*\])\n(.*?)[\n \t]*\\end{codeexample}/gs );
+	@matches = ( $content =~ m/\n\n\s*%?\s*(.*?)(% \\[^\n]*\n)*([^\n]*)\\begin{codeexample}(\[[^\n]*\])\n(.*?)[\n \t]*\\end{codeexample}/gs );
 	#	@matches = ( $content =~ m/(% [^\n]*\n)*\\begin{codeexample}(\[\])\n(\\begin{tikzpicture}.*?\\end{tikzpicture})/gs );
 
 	if( $ARGV[$j] =~ m/pgfplotstable.tex/ ) {
@@ -141,18 +141,20 @@ for($j = 2; $j<=$#ARGV; ++$j ) {
 \usepgfplotslibrary{'.$libName[0].'}';
 	}
 
-	for( $q=0; $q<=$#matches/4; $q++ ) {
-		$prefix = $matches[4*$q];
+	for( $q=0; $q<=$#matches/5; $q++ ) {
+		$instruction = $matches[5*$q];
+
+		$prefix = $matches[5*$q+1];
 		$prefix = "" if not defined($prefix);
 		next if ($prefix =~ m/NO GALLERY/);
 		$prefix =~ s/% //;
 
-		$possiblecomment = $matches[4*$q+1];
+		$possiblecomment = $matches[5*$q+2];
 		$possiblecomment = "" if not defined($possiblecomment);
 		next if ($possiblecomment =~ m/%/);
 
-		$codeexamplearg= $matches[4*$q+2];
-		$match = $matches[4*$q+3];
+		$codeexamplearg= $matches[5*$q+3];
+		$match = $matches[5*$q+4];
 
 		# Make sure we have only "relevant" pictures:
 		next if not ($match =~ m/tikzpicture.*(axis|semilogxaxis|semilogyaxis|loglogaxis).*\\addplot|pgfplotstabletypeset/s);
@@ -177,6 +179,7 @@ for($j = 2; $j<=$#ARGV; ++$j ) {
 	# print "$i : ".$match."\n\n";
 	# next;
 			open(OUTFILE,">",$outfile) or die( "could not open $outfile for writing");
+			print OUTFILE "%% $_\n" foreach split(/\n/, $instruction);
 			print OUTFILE $header;
 			print OUTFILE $autoheaders;
 			print OUTFILE "\n\\usepackage{pgfplotstable}" if ($match =~ /pgfplotstable/ and $largegraphics != 1);
