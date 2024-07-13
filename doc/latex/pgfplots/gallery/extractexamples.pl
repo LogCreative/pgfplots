@@ -183,6 +183,7 @@ for($j = 2; $j<=$#ARGV; ++$j ) {
 			print OUTFILE "\n\\usepackage{hyperref}" if ($match =~ /\\url/);
 			print OUTFILE "\n\\usepackage{textcomp}" if ($match =~ /\\textdegree/);
 			print OUTFILE "\n\\usepackage{listings}" if ($match =~ /\\lst/);
+			print OUTFILE "\n\\usetikzlibrary{patterns}" if ($match =~ /pattern=/);
 			if ($match =~ m/%\s?\w*\s?\\usetikzlibrary{(.*)}/) {
 				my $tikzLibraries = $1;
 				$match =~ s/%\s?\w*\s?\\usetikzlibrary{(.*)}\s*\w*\n//;
